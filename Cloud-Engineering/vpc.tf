@@ -1,36 +1,69 @@
-module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
-  name   = var.name
-  cidr   = var.cidr_block
-
-  azs             = var.azs
-  public_subnets  = var.public_subnet_cidrs
-  private_subnets = var.private_subnet_cidrs
-
-  create_database_subnet_group = true
-  create_database_subnet_route_table = true
-  database_subnets = var.database_subnet_cidrs
-
-  enable_nat_gateway = true
-  single_nat_gateway = true
-
-  enable_dns_hostnames = true
-  enable_dns_support = true
-
-  public_subnet_tags = {
-    Type = "public-subnets"
-  }
-
-  private_subnet_tags = {
-    Type = "private-subnets"
-  }
-
-  database_subnet_tags = {
-    Type = "database-subnets"
-  }
-
+#VPC Creation
+resource "aws_vpc" "megazone_vpc" {
+  cidr_block = var.cidr
   tags = {
-    Environment = "dev"
-    Project     = "megazone"
+    Name = "Megazone_VPC"
   }
 }
+
+#Public Subnet
+resource "aws_subnet" "public_subnets" {
+  count             = length(var.azs)
+  vpc_id            = aws_vpc.megazone_vpc.id
+  cidr_block       = var.public_subnet_cidrs[count.index]
+  availability_zone = var.azs[count.index]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Public_Subnet_${count.index + 1}"
+  }
+}
+
+#Private Subnet
+resource aws_subnet "private_subnets" {
+  count             = length(var.azs)
+  vpc_id            = aws_vpc.megazone_vpc.id
+  cidr_block       = var.private_subnet_cidrs[count.index]
+  availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "Private_Subnet_${count.index + 1}"
+  }
+}
+
+#Private Database Subnet
+resource aws_subnet "database_subnets" {
+  count             = length(var.azs)
+  vpc_id            = aws_vpc.megazone_vpc.id
+  cidr_block       = var.database_subnet_cidrs[count.index]
+  availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "Database_Subnet_${count.index + 1}"
+  }
+} 
+
+#Internet Gateway
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.megazone_vpc.id
+
+  tags = {
+    Name = "Megazone_IGW"
+  }
+}
+
+#NAT Gateway
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gateway" {
+  count         = length(var.azs)
+  allocation_id = aws_eip.nat_eip[count.index].id
+  subnet_id     = aws_subnet.public_subnets[count.index].id
+
+  tags = {
+    Name = "Nat_Gateway_${count.index + 1}"
+  }
+}
+
