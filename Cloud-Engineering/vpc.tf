@@ -20,7 +20,7 @@ resource "aws_subnet" "public_subnets" {
 }
 
 #Private Subnet
-resource aws_subnet "private_subnets" {
+resource "aws_subnet" "private_subnets" {
   count             = length(var.azs)
   vpc_id            = aws_vpc.megazone_vpc.id
   cidr_block       = var.private_subnet_cidrs[count.index]
@@ -32,7 +32,7 @@ resource aws_subnet "private_subnets" {
 }
 
 #Private Database Subnet
-resource aws_subnet "database_subnets" {
+resource "aws_subnet" "database_subnets" {
   count             = length(var.azs)
   vpc_id            = aws_vpc.megazone_vpc.id
   cidr_block       = var.database_subnet_cidrs[count.index]
