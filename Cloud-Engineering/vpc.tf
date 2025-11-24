@@ -58,12 +58,11 @@ resource "aws_eip" "nat_eip" {
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
-  count         = length(var.azs)
-  allocation_id = aws_eip.nat_eip[count.index].id
-  subnet_id     = aws_subnet.public_subnets[count.index].id
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public_subnets[0].id
 
   tags = {
-    Name = "Nat_Gateway_${count.index + 1}"
+    Name = "Nat_Gateway"
   }
 }
 
