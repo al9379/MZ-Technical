@@ -61,7 +61,7 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
 
 4.  **Test Bastion**:
     ```bash
-    ssh -i megazone-bastion-key.pem ec2-user@your-ip-here
+    ssh -i megazone-bastion-key.pem ec2-user@bastion_public_ip
     ```
 
 ## Outputs
