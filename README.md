@@ -59,6 +59,11 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
     terraform apply
     ```
 
+4.  **Test Bastion**:
+    ```bash
+    ssh -i megazone-bastion-key.pem ec2-user@your-ip-here
+    ```
+
 ## Outputs
 * `vpc_id`: The ID of the Megazone VPC.
 * `public_subnet_ids`: List of public subnet IDs.
