@@ -12,7 +12,7 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
 3.  **Private Database Subnet**: Hosts databases
 
 ### Architecture Diagram
-<img width="1224" height="671" alt="image" src="https://github.com/user-attachments/assets/38dc7192-2031-493c-a6fc-4d66a8730293" />
+![Architecture Diagram](https://github.com/al9379/MZ-Technical/blob/main/ArchitectureDiagram.png)
 
 ### Security Groups
 *   **ALB SG**:
