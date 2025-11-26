@@ -2,6 +2,8 @@
 
 This Terraform project implements a production-grade network architecture in AWS to host a standard three-tier web application. Terraform was chosen over CDK for its declarative approach, making infrastructure management easier and more consistent.
 
+Github Link: https://github.com/al9379/MZ-Technical
+
 ## Infrastructure
 
 The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
