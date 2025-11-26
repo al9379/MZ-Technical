@@ -120,8 +120,6 @@ resource "aws_security_group" "database_sg" {
   }
 }
 
-# --- Network ACLs ---
-
 # Public Network ACL
 resource "aws_network_acl" "public_nacl" {
   vpc_id     = var.vpc_id
@@ -202,7 +200,7 @@ resource "aws_network_acl" "app_nacl" {
   }
 }
 
-# Allow HTTP from ALB (public subnet)
+# Allow HTTP from ALB
 resource "aws_network_acl_rule" "app_ingress_http_from_public" {
   count          = length(var.public_subnet_cidrs)
   network_acl_id = aws_network_acl.app_nacl.id
@@ -215,7 +213,7 @@ resource "aws_network_acl_rule" "app_ingress_http_from_public" {
   to_port        = 80
 }
 
-# Allow SSH from Bastion (public subnet)
+# Allow SSH from Bastion
 resource "aws_network_acl_rule" "app_ingress_ssh_from_public" {
   network_acl_id = aws_network_acl.app_nacl.id
   rule_number    = 120
@@ -252,7 +250,7 @@ resource "aws_network_acl_rule" "app_egress_https" {
   to_port        = 443
 }
 
-# Outbound ephemeral for App → ALB/db responses
+# Outbound ephemeral ports to ALB
 resource "aws_network_acl_rule" "app_egress_ephemeral" {
   network_acl_id = aws_network_acl.app_nacl.id
   rule_number    = 230
@@ -274,7 +272,7 @@ resource "aws_network_acl" "db_nacl" {
   }
 }
 
-# Allow App → DB on port 3306 from all app subnets
+# Database inbound MySQL from App tier
 resource "aws_network_acl_rule" "db_ingress_mysql_from_app" {
   count          = length(var.private_subnet_cidrs)
   network_acl_id = aws_network_acl.db_nacl.id
@@ -287,7 +285,7 @@ resource "aws_network_acl_rule" "db_ingress_mysql_from_app" {
   to_port        = 3306
 }
 
-# DB outbound ephemeral for responses to all app subnets
+# DB outbound ephemeral to App tier
 resource "aws_network_acl_rule" "db_egress_ephemeral_to_app" {
   count          = length(var.private_subnet_cidrs)
   network_acl_id = aws_network_acl.db_nacl.id

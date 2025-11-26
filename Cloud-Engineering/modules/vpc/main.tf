@@ -67,8 +67,6 @@ resource "aws_nat_gateway" "nat_gateway" {
   }
 }
 
-# --- Routing ---
-
 # Define route tables for public, private, and database subnets
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.megazone_vpc.id

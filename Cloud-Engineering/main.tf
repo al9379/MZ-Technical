@@ -31,7 +31,7 @@ module "alb" {
 }
 
 module "compute" {
-  source = "./modules/compute"
+  source = "./modules/bastion"
 
   public_subnet_id = module.vpc.public_subnet_ids[0]
   bastion_sg_id    = module.security.bastion_sg_id

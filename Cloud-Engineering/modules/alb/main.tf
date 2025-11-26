@@ -29,7 +29,7 @@ resource "aws_lb_target_group" "app_tier" {
   }
 }
 
-# Create target group attachment for each private app server
+# Create target group attachment for each private app server here
 
 # Listener for HTTP (port 80)
 resource "aws_lb_listener" "http" {
@@ -60,8 +60,6 @@ resource "aws_lb_listener" "https" {
     target_group_arn = aws_lb_target_group.app_tier.arn
   }
 }
-
-# --- Certificates ---
 
 # Generate a private key
 resource "tls_private_key" "example" {
