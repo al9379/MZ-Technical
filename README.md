@@ -65,16 +65,6 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
     ```
 
 ## Outputs
-* `vpc_id`: The ID of the Megazone VPC.
-* `public_subnet_ids`: List of public subnet IDs.
-* `private_subnet_ids`: List of private application subnet IDs.
-* `database_subnet_ids`: List of database subnet IDs.
-* `nat_gateway_id`: The NAT Gateway ID for private subnets to access the internet.
-* `bastion_sg_id`: Security group ID of the bastion host.
-* `app_sg_id`: Security group ID of the application servers.
-* `database_sg_id`: Security group ID of the database servers.
 * `alb_dns_name`: The public URL of the Application Load Balancer.
-* `alb_arn`: The ARN of the Application Load Balancer.
 * `bastion_public_ip`: The public IP to SSH into the bastion host.
-* `bastion_instance_id`: The EC2 instance ID of the bastion host.
 
