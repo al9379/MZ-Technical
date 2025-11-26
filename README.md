@@ -42,7 +42,7 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
 
 ## Deployment
 1. **Set Local Variables**
-   *   Set ssh_allows_ips in variables.tf
+   *   Set ssh_allowed_ips in variables.tf
    *   Generate EC2 key pair to connect to Bastion instance
 
 2.  **Initialize Terraform**:
