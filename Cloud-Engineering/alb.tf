@@ -1,3 +1,4 @@
+#Application Load Balancer Configuration
 resource "aws_lb" "application_load_balancer" {
   name               = "megazone-alb"
   internal           = false
@@ -12,6 +13,7 @@ resource "aws_lb" "application_load_balancer" {
   }
 }
 
+#Target Group to Forward Traffic to
 resource "aws_lb_target_group" "app_tier" {
   name     = "app-tier-tg"
   port     = 80
@@ -23,18 +25,14 @@ resource "aws_lb_target_group" "app_tier" {
   }
 }
 
+# Listener for HTTP (port 80)
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.application_load_balancer.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
-
-    redirect {
-      port        = "443"
-      protocol    = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    type = "forward"
+    target_group_arn = aws_lb_target_group.app_tier.arn
   }
 }

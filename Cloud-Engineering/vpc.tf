@@ -1,6 +1,6 @@
 #VPC Creation
 resource "aws_vpc" "megazone_vpc" {
-  cidr_block = var.cidr
+  cidr_block = var.vpc_cidr
   tags = {
     Name = "Megazone_VPC"
   }
@@ -52,11 +52,12 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-#NAT Gateway
+#Create an Elastic IP for the NAT Gateway
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
 }
 
+#NAT Gateway Configuration
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_subnets[0].id

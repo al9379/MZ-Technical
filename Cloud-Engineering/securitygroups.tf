@@ -1,3 +1,4 @@
+#Load Balancer Security Group
 resource "aws_security_group" "alb_sg" {
   name        = "alb_sg"
   description = "Allow traffic to ALB"
@@ -18,10 +19,11 @@ resource "aws_security_group" "alb_sg" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.global_cidr_block
+    description = "HTTP to App servers"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.app_sg.id]
   }
 
   tags = {
@@ -29,6 +31,7 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
+#Bastion EC2 Security Group
 resource "aws_security_group" "bastion_sg" {
   name        = "bastion_sg"
   description = "Allow SSH access to bastion host"
@@ -43,6 +46,15 @@ resource "aws_security_group" "bastion_sg" {
   }
 
   egress {
+    description = "SSH to App servers"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    security_groups = [aws_security_group.app_sg.id]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -54,6 +66,7 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
+#Private Application Server Security Group
 resource "aws_security_group" "app_sg" {
   name        = "app_sg"
   description = "Security group for application servers"
@@ -75,11 +88,19 @@ resource "aws_security_group" "app_sg" {
     security_groups = [aws_security_group.bastion_sg.id]
   }
 
+  egress{
+    description = "MySQL to Database tier"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    security_groups = [aws_security_group.database_sg.id]
+  }
+
   egress {
-    description = "Allow all outbound for app updates and database access"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "HTTPS to internet through NAT"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = var.global_cidr_block
   }
 
@@ -88,6 +109,7 @@ resource "aws_security_group" "app_sg" {
   }
 }
 
+#Private Database Server Security Group
 resource "aws_security_group" "database_sg" {
   name        = "database_sg"
   description = "Security group for database subnet"
@@ -99,14 +121,6 @@ resource "aws_security_group" "database_sg" {
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.app_sg.id]
-  }
-
-  egress {
-    description = "Allow responses to App tier only"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.private_subnet_cidrs
   }
 
   tags = {

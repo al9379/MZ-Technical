@@ -1,3 +1,4 @@
+# Define route tables for public, private, and database subnets
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.megazone_vpc.id
 
@@ -30,6 +31,7 @@ resource "aws_route_table" "database_route_table" {
   }
 }
 
+# Associate route tables with subnets
 resource "aws_route_table_association" "public_route_table_association" {
   count          = length(var.public_subnet_cidrs)
   subnet_id      = aws_subnet.public_subnets[count.index].id
