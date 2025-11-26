@@ -1,6 +1,6 @@
 # Megazone Cloud-Engineering Technical Assignment
 
-This Terraform project implements a production-grade network architecture in AWS to host a standard three-tier web application.
+This Terraform project implements a production-grade network architecture in AWS to host a standard three-tier web application. Terraform was chosen over CDK for its declarative approach, making infrastructure management easier and more consistent.
 
 ## Infrastructure
 
