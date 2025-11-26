@@ -49,4 +49,5 @@ variable "database_subnet_cidrs" {
 variable "ssh_allowed_ips" {
   description = "CIDR blocks allowed to access Bastion via SSH"
   type        = list(string)
+  default = ["68.132.96.4/32"]
 }
