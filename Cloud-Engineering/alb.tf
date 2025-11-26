@@ -20,10 +20,16 @@ resource "aws_lb_target_group" "app_tier" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.megazone_vpc.id
 
+  target_health_state {
+    enable_unhealthy_connection_termination = false
+  }
+
   tags = {
     Name = "App-Tier-Target-Group"
   }
 }
+
+#Create target group attachment for each private app server
 
 # Listener for HTTP (port 80)
 resource "aws_lb_listener" "http" {
@@ -32,7 +38,25 @@ resource "aws_lb_listener" "http" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.application_load_balancer.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_acm_certificate.cert.arn
+
+  default_action {
+    type             = "forward"
     target_group_arn = aws_lb_target_group.app_tier.arn
   }
 }

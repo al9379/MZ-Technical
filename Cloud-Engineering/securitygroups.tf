@@ -19,11 +19,11 @@ resource "aws_security_group" "alb_sg" {
   }
 
   egress {
-    description = "HTTP to App servers"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    security_groups = [aws_security_group.app_sg.id]
+    description = "Outbound to All"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.global_cidr_block
   }
 
   tags = {
@@ -43,14 +43,6 @@ resource "aws_security_group" "bastion_sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = var.ssh_allowed_ips
-  }
-
-  egress {
-    description = "SSH to App servers"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    security_groups = [aws_security_group.app_sg.id]
   }
 
   egress {
@@ -93,7 +85,7 @@ resource "aws_security_group" "app_sg" {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    security_groups = [aws_security_group.database_sg.id]
+    cidr_blocks = var.database_subnet_cidrs
   }
 
   egress {
