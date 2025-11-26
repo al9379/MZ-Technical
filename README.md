@@ -1,4 +1,4 @@
-# Megazone Technical Assignment
+# Megazone Cloud-Engineering Technical Assignment
 
 This Terraform project implements a production-grade network architecture in AWS to host a standard three-tier web application.
 
@@ -72,3 +72,4 @@ The infrastructure spans 2 availability zones: us-east-1a and us-east-1b
 * `alb_arn`: The ARN of the Application Load Balancer.
 * `bastion_public_ip`: The public IP to SSH into the bastion host.
 * `bastion_instance_id`: The EC2 instance ID of the bastion host.
+
